@@ -77,15 +77,18 @@ const loginFn = () => {
         // 用 js-cookie 第三方库
         Cookie.set('token', res.data.tokenHead + res.data.token, {expires: 7})
         // 获取用户信息请求
-        getAdminInfoApi().then(res => {
-          if(res.code === 200) {
-
-            // res.data.menus
-            store.commit('updateMenus', res.data.menus)
-            // 跳转到主页面
-            router.push('/home')
-          }
+        store.dispatch('getAdminInfo').then(res => {
+          router.push('/home')
         })
+        // getAdminInfoApi().then(res => {
+        //   if(res.code === 200) {
+
+        //     // res.data.menus
+        //     store.commit('updateMenus', res.data.menus)
+        //     // 跳转到主页面
+        //     router.push('/home')
+        //   }
+        // })
       }
     })
   }).catch(() => {

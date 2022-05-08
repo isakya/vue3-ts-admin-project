@@ -7,9 +7,11 @@
         background-color="#545c64"
         class="el-menu-vertical-demo"
         default-active="2"
+        :unique-opened="true"
         text-color="#fff"
+        :router="true"
       >
-        <el-sub-menu index="1" v-for="menu in newMenus" :key="menu.id">
+        <el-sub-menu :index="menu.id + ''" v-for="menu in newMenus" :key="menu.id">
           <template #title>
             <span>{{menu.title}}</span>
           </template>
