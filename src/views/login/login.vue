@@ -1,11 +1,12 @@
 <template>
-  <router-view></router-view>
+  123123
 </template>
 
 <script setup lang='ts'>
-import {  } from "vue" 
+import { reactive, toRefs, ref } from "vue" 
   
 </script>
 
 <style lang="less" scoped>
+  
 </style>

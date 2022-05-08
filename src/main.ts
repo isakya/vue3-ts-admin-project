@@ -1,4 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { initRouter } from './router'
 
-createApp(App).mount('#app')
+
+const app = createApp(App)
+initRouter(app)
+// app.use(router)
+app.mount('#app')
