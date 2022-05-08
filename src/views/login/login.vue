@@ -29,6 +29,7 @@ import { reactive, toRefs, ref } from "vue"
 import { adminLoginApi, getAdminInfoApi } from '../../request/api'
 import Cookie from 'js-cookie'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 // 自定义校验密码函数
 const validatePwd = (rule: unknown, value: string | undefined, cb: (msg?: string) => void) => {
@@ -59,6 +60,9 @@ let ruleFormRef = ref()
 // 获取项目路由对象
 let router = useRouter()
 
+// 获取当前项目的vuex对象
+let store = useStore()
+
 // 登陆
 const loginFn = () => {
   ruleFormRef.value.validate().then(() => {
@@ -75,7 +79,10 @@ const loginFn = () => {
         // 获取用户信息请求
         getAdminInfoApi().then(res => {
           if(res.code === 200) {
+
             // res.data.menus
+            store.commit('updateMenus', res.data.menus)
+            // 跳转到主页面
             router.push('/home')
           }
         })

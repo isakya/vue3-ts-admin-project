@@ -1,14 +1,46 @@
 <template>
   <div class="home_container">
     <div class="home_header">头部</div>
-    <div class="home_menu">菜单</div>
+    <div class="home_menu">
+      <el-menu
+        active-text-color="#ffd04b"
+        background-color="#545c64"
+        class="el-menu-vertical-demo"
+        default-active="2"
+        text-color="#fff"
+      >
+        <el-sub-menu index="1" v-for="menu in newMenus" :key="menu.id">
+          <template #title>
+            <span>{{menu.title}}</span>
+          </template>
+          <template v-for="submenu in menu.children" :key="submenu.id">
+            <el-menu-item index="1-4-1" v-if="!submenu.hidden">{{submenu.title}}</el-menu-item>
+          </template>
+        </el-sub-menu>
+      </el-menu>
+    </div>
     <div class="home_content">右侧内容</div>
   </div>
 </template>
 
 <script setup lang='ts'>
 import { reactive, toRefs, ref } from "vue" 
-  
+import { useStore } from "vuex";
+// [{title:'一级菜单', children:[{二级菜单对象}, {二级菜单对象}]}]
+// { 一级菜单id: {title: '一级菜单标题', children: [{二级菜单对象}, {二级菜单对象}]}}
+const store = useStore()
+interface MenuObj {
+  parentId: number
+  id: number
+  title: string,
+  hidden: 0 | 1
+  children?: MenuObj[]
+}
+interface NewMenus {
+  [key: number]: MenuObj
+}
+const newMenus: NewMenus = store.getters.getNewMenus
+
 </script>
 
 <style lang="less" scoped>
