@@ -25,7 +25,7 @@ import { reactive, toRefs, ref } from "vue"
       left: 0;
       bottom: 0;
       width: 250px;
-      background-color: rgb(11, 11, 29);
+      background-color: rgb(215, 66, 185);
     }
     .home_content {
       position: absolute;
