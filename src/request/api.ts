@@ -25,9 +25,20 @@ interface AdminInfoRes {
   menus: []
 }
 
+// 用户列表请求参数
+interface AdminListParams {
+  keyword: string,
+  pageNum: number, 
+  pageSize: number
+}
+
+
 // 登陆返回token
  export const adminLoginApi= (data: AdminLoginData):PromiseRes<AdminLoginRes> => request.post('/admin/login', data)
 
 
 //  获取当前登陆用户信息
 export const getAdminInfoApi = ():PromiseRes<AdminInfoRes> => request.get('/admin/info')
+
+// 获取用户数据列表
+export const getAdminLists = (data: AdminListParams):PromiseRes<{ list: {}[] }> => request.get('/admin/list', { params: data })
