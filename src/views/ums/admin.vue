@@ -24,22 +24,28 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
-        <template #default>
+        <template #default="{ row }">
           <el-button type="text">切换角色</el-button>
-          <el-button type="text" @click="editAdmin">编辑</el-button>
+          <el-button type="text" @click="editAdmin(row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <EditAdmin :visible="visible" @close="closeDialog" :form="rowData" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, toRefs, ref } from "vue" 
 import { getAdminLists } from '../../request/api'
-let { tableData } = toRefs(reactive<{
-  tableData: {}[]
+import EditAdmin from './components/EditAdmin.vue'
+let { tableData, visible, rowData } = toRefs(reactive<{
+  tableData: {}[],
+  visible: boolean,
+  rowData: AdminObjItf
 }>({
-  tableData: []
+  tableData: [],
+  visible: false,
+  rowData: {}
 }))
 
 getAdminLists({
@@ -53,8 +59,13 @@ getAdminLists({
 })
 
 // 点击编辑按钮
-const editAdmin = () => {
-  
+const editAdmin = (row: AdminObjItf) => {
+  rowData.value = row
+  visible.value = true
+}
+// 隐藏弹框
+const closeDialog = () => {
+  visible.value = false
 }
 
 // 格式化时间
