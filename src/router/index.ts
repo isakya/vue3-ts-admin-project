@@ -33,6 +33,50 @@ const router = createRouter({
   routes // 路由配置
 })
 
+// 根据getters里面的菜单对象生成路由规则
+const genRoutes = () => {
+   // 动态菜单设置
+   const menus = store.getters.getNewMenus
+   // 循环菜单对象,设置动态菜单
+   for(let key in menus) {
+     const newRoute: RouteRecordRaw = {
+       path: '/' + menus[key].name,
+       name: menus[key].name,
+       component: () => import('../views/home/home.vue'),
+       // 重定向到二级路由
+       redirect: '/' + menus[key].name + '/' + menus[key].children[0].name,
+       children: []
+     }
+     for(let i = 0; i < menus[key].children.length; i++) {
+       let name =  menus[key].children[i].name
+       newRoute.children?.push({
+         path: name,
+         name: name,
+         component: () => import(`../views/${menus[key].name}/${name}.vue`),
+         children: []
+       })
+     }
+     // 动态添加路由规则
+     router.addRoute(newRoute)
+   }
+   // 动态添加首页
+   router.addRoute({
+     path: '/',
+     name: 'home',
+     component: () => import('../views/home/home.vue'),
+     // 重定向到二级路由
+     redirect: '/index',
+     children: [
+       {
+         path: 'index',
+         name: 'index',
+         component: () => import('../views/index/index.vue')
+       }
+     ]
+   })
+}
+
+
 // 前置导航守卫
 router.beforeEach((to, from, next) => {
   // 1. token && vuex里面menus(权限列表)为空
@@ -41,47 +85,14 @@ router.beforeEach((to, from, next) => {
     console.log('token存在, menus为空-->重新获取菜单列表数据')
     // 异步
     store.dispatch('getAdminInfo').then(() => {
-      // 动态菜单设置
-      const menus = store.getters.getNewMenus
-      // 循环菜单对象,设置动态菜单
-      for(let key in menus) {
-        const newRoute: RouteRecordRaw = {
-          path: '/' + menus[key].name,
-          name: menus[key].name,
-          component: () => import('../views/home/home.vue'),
-          // 重定向到二级路由
-          redirect: '/' + menus[key].name + '/' + menus[key].children[0].name,
-          children: []
-        }
-        for(let i = 0; i < menus[key].children.length; i++) {
-          let name =  menus[key].children[i].name
-          newRoute.children?.push({
-            path: name,
-            name: name,
-            component: () => import(`../views/${menus[key].name}/${name}.vue`),
-            children: []
-          })
-        }
-        // 动态添加路由规则
-        router.addRoute(newRoute)
-      }
-      // 动态添加首页
-      router.addRoute({
-        path: '/',
-        name: 'home',
-        component: () => import('../views/home/home.vue'),
-        // 重定向到二级路由
-        redirect: '/index',
-        children: [
-          {
-            path: 'index',
-            name: 'index',
-            component: () => import('../views/index/index.vue')
-          }
-        ]
-      })
+      // 动态添加路由规则
+      genRoutes()
       next(to)
     })
+  } else if(token && store.state.menus.length !== 0 && from.path === '/login' && to.path === '/home') {
+    // 动态添加路由规则
+    genRoutes()
+    next('/index')
   } else {
     next()
   }
