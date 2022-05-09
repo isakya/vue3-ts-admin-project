@@ -12,7 +12,7 @@ interface ManageResult<T = {}> {
 }
 
 // 设置类型别名 提取公共代码
-type PromiseRes<T> = Promise<ManageResult<T>>
+type PromiseRes<T = {}> = Promise<ManageResult<T>>
 
 // 登陆返回接口
 interface AdminLoginRes {
@@ -42,3 +42,6 @@ export const getAdminInfoApi = ():PromiseRes<AdminInfoRes> => request.get('/admi
 
 // 获取用户数据列表
 export const getAdminLists = (data: AdminListParams):PromiseRes<{ list: {}[] }> => request.get('/admin/list', { params: data })
+
+// 修改用户信息
+export const updateAdmin = (id: number, data: AdminObjItf):PromiseRes => request.post('admin/update/' + id)

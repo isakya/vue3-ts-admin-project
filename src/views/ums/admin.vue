@@ -48,15 +48,19 @@ let { tableData, visible, rowData } = toRefs(reactive<{
   rowData: {}
 }))
 
-getAdminLists({
-  keyword: '',
-  pageSize: 10,
-  pageNum: 1
-}).then(res => {
-  if(res.code === 200) {
-    tableData.value = res.data.list
-  }
-})
+const fetchData = () => {
+  getAdminLists({
+    keyword: '',
+    pageSize: 10,
+    pageNum: 1
+  }).then(res => {
+    if(res.code === 200) {
+      tableData.value = res.data.list
+    }
+  })
+}
+fetchData()
+
 
 // 点击编辑按钮
 const editAdmin = (row: AdminObjItf) => {
@@ -64,8 +68,12 @@ const editAdmin = (row: AdminObjItf) => {
   visible.value = true
 }
 // 隐藏弹框
-const closeDialog = () => {
+const closeDialog = (r?: 'reload') => {
   visible.value = false
+  if(r === 'reload') {
+    // 重新获取数据
+    fetchData()
+  }
 }
 
 // 格式化时间

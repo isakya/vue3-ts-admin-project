@@ -5,4 +5,5 @@ interface AdminObjItf {
   password?: string
   note?: string
   status?: number
+  id?: number
 }

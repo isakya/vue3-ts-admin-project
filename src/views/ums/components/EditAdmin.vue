@@ -34,6 +34,8 @@
 
 <script setup lang="ts">
 import { reactive, toRefs, ref, watch } from "vue"
+import { updateAdmin } from '../../../request/api';
+
 const props = defineProps<{
   visible: boolean,
   form: AdminObjItf
@@ -42,7 +44,7 @@ const state = reactive<{
     formLabelWidth: string;
     newForm: AdminObjItf
 }>({
-  formLabelWidth: '120px',
+  formLabelWidth: '100px',
   newForm: {}
 })
 
@@ -57,16 +59,23 @@ watch(() => props.form, () => {
 })
 
 const emit = defineEmits<{
-  (event: 'close'): void
+  (event: 'close', r?: 'reload'): void
 }>()
 // 确定按钮
 const modifyAdmin = () => {
+  if(newForm.value.id) {
+    updateAdmin(newForm.value.id, newForm.value).then(res => {
+      if(res.code === 200) {
+        close('reload')
+      }
+    })
+  }
   close()
 }
 // 点击关闭
-const close = () => {
+const close = (r?: 'reload') => {
   // 传到父组件
-  emit('close')
+  emit('close', r)
 }
 
 </script>
