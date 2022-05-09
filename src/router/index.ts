@@ -10,11 +10,11 @@ let routes: RouteRecordRaw[] = [
     name: 'login',
     component: () => import('../views/login/login.vue')
   },
-  {
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/home/home.vue')
-  },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   component: () => import('../views/home/home.vue')
+  // },
   // {
   //   path: '/pms',
   //   name: 'pms',
@@ -49,6 +49,8 @@ router.beforeEach((to, from, next) => {
           path: '/' + menus[key].name,
           name: menus[key].name,
           component: () => import('../views/home/home.vue'),
+          // 重定向到二级路由
+          redirect: '/' + menus[key].name + '/' + menus[key].children[0].name,
           children: []
         }
         for(let i = 0; i < menus[key].children.length; i++) {
@@ -63,7 +65,22 @@ router.beforeEach((to, from, next) => {
         // 动态添加路由规则
         router.addRoute(newRoute)
       }
-      next(to.path)
+      // 动态添加首页
+      router.addRoute({
+        path: '/',
+        name: 'home',
+        component: () => import('../views/home/home.vue'),
+        // 重定向到二级路由
+        redirect: '/index',
+        children: [
+          {
+            path: 'index',
+            name: 'index',
+            component: () => import('../views/index/index.vue')
+          }
+        ]
+      })
+      next(to)
     })
   } else {
     next()
