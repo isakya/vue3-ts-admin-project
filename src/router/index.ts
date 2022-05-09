@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
         for(let i = 0; i < menus[key].children.length; i++) {
           let name =  menus[key].children[i].name
           newRoute.children?.push({
-            path: '/' + name,
+            path: name,
             name: name,
             component: () => import(`../views/${menus[key].name}/${name}.vue`),
             children: []
@@ -63,9 +63,11 @@ router.beforeEach((to, from, next) => {
         // 动态添加路由规则
         router.addRoute(newRoute)
       }
+      next(to.path)
     })
+  } else {
+    next()
   }
-  next()
 })
 
 // export default router // 这样导出会在全局暴露router
