@@ -93,6 +93,10 @@ router.beforeEach((to, from, next) => {
     // 动态添加路由规则
     genRoutes()
     next('/index')
+  } else if(!token && to.path !== '/login') {
+    next('/login')
+  } else if(token && to.path === '/login') {
+    next('/index')
   } else {
     next()
   }
