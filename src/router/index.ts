@@ -14,7 +14,19 @@ let routes: RouteRecordRaw[] = [
     path: '/home',
     name: 'home',
     component: () => import('../views/home/home.vue')
-  }
+  },
+  // {
+  //   path: '/pms',
+  //   name: 'pms',
+  //   component: () => import('../views/home/home.vue'),
+  //   children: [
+  //     {
+  //       path: 'product',
+  //       name: 'product',
+  //       component: () => import('../views/pms/product.vue'),
+  //     }
+  //   ]
+  // }
 ]
 const router = createRouter({
   history: createWebHashHistory(),
@@ -27,13 +39,31 @@ router.beforeEach((to, from, next) => {
   const token = Cookies.get('token')
   if(token && store.state.menus.length === 0) {
     console.log('token存在, menus为空-->重新获取菜单列表数据')
-    store.dispatch('getAdminInfo')
-    // 抽离方法放到vuex的actions中
-    // getAdminInfoApi().then(res => {
-    //   if(res.code === 200) {
-    //     store.commit('updateMenus', res.data.menus)
-    //   }
-    // })
+    // 异步
+    store.dispatch('getAdminInfo').then(() => {
+      // 动态菜单设置
+      const menus = store.getters.getNewMenus
+      // 循环菜单对象,设置动态菜单
+      for(let key in menus) {
+        const newRoute: RouteRecordRaw = {
+          path: '/' + menus[key].name,
+          name: menus[key].name,
+          component: () => import('../views/home/home.vue'),
+          children: []
+        }
+        for(let i = 0; i < menus[key].children.length; i++) {
+          let name =  menus[key].children[i].name
+          newRoute.children?.push({
+            path: '/' + name,
+            name: name,
+            component: () => import(`../views/${menus[key].name}/${name}.vue`),
+            children: []
+          })
+        }
+        // 动态添加路由规则
+        router.addRoute(newRoute)
+      }
+    })
   }
   next()
 })

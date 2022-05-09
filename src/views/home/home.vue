@@ -16,17 +16,19 @@
             <span>{{menu.title}}</span>
           </template>
           <template v-for="submenu in menu.children" :key="submenu.id">
-            <el-menu-item index="1-4-1" v-if="!submenu.hidden">{{submenu.title}}</el-menu-item>
+            <el-menu-item :index="'/' + menu.name + '/'+ submenu.name" v-if="!submenu.hidden">{{submenu.title}}</el-menu-item>
           </template>
         </el-sub-menu>
       </el-menu>
     </div>
-    <div class="home_content">右侧内容</div>
+    <div class="home_content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { reactive, toRefs, ref } from "vue" 
+import { reactive, toRefs, ref, computed } from "vue" 
 import { useStore } from "vuex";
 // [{title:'一级菜单', children:[{二级菜单对象}, {二级菜单对象}]}]
 // { 一级菜单id: {title: '一级菜单标题', children: [{二级菜单对象}, {二级菜单对象}]}}
@@ -35,13 +37,17 @@ interface MenuObj {
   parentId: number
   id: number
   title: string,
-  hidden: 0 | 1
+  hidden: 0 | 1,
+  name: string
   children?: MenuObj[]
 }
 interface NewMenus {
   [key: number]: MenuObj
 }
-const newMenus: NewMenus = store.getters.getNewMenus
+// 改用计算属性，防止请求返回的数据改变但页面不重新渲染问题
+const newMenus = computed<NewMenus>(() => {
+  return  store.getters.getNewMenus
+})
 
 </script>
 
