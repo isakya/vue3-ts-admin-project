@@ -65,7 +65,10 @@ const newMenus = computed<NewMenus>(() => {
       left: 0;
       bottom: 0;
       width: 250px;
-      background-color: rgb(215, 66, 185);
+      background-color: #545c64;
+      .el-menu{
+        border:0!important;
+      }
     }
     .home_content {
       position: absolute;

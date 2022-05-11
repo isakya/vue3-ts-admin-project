@@ -1,40 +1,6 @@
 import request from './request'
 import qs from 'qs'
 
-interface AdminLoginData {
-  password: string
-  username: string
-}
-
-interface ManageResult<T = {}> {
-  code: number
-  data: T
-  message: string
-}
-
-// 设置类型别名 提取公共代码
-type PromiseRes<T = {}> = Promise<ManageResult<T>>
-
-// 登陆返回接口
-interface AdminLoginRes {
-  token: string,
-  tokenHead: string
-}
-
-// 当前用户信息接口
-interface AdminInfoRes {
-  menus: []
-}
-
-// 用户列表请求参数
-interface AdminListParams {
-  keyword: string,
-  pageNum: number, 
-  pageSize: number
-}
-
-
-
 // 登陆返回token
  export const adminLoginApi= (data: AdminLoginData):PromiseRes<AdminLoginRes> => request.post('/admin/login', data)
 
@@ -63,3 +29,7 @@ export const getAdminRoleById = (id: number):PromiseRes<RoleObjItf[]> => request
 // qs将data转换为 a=xxx&b=xxx 的形式，这样浏览器就会自动将请求形式转换为form-data类型
 console.log(qs.stringify({roleId: 12, adminId: 222}))
 export const updateAdminRole = (data: {adminId: number, roleIds: string}):PromiseRes => request.post('/admin/role/update', qs.stringify(data))
+
+
+// 获取首页数据
+export const getAdminStat = ():PromiseRes<IndexDataItf> => request.get('http://kumanxuan1.f3322.net:8360/admin/stat')
